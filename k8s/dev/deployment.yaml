@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: random-app-deploy
+  namespace: random-app-ns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: random-app
+  template:
+    metadata:
+      labels:
+        app: random-app
+    spec:
+      serviceAccountName: random-app-sa
+      containers:
+      - name: random-app-container
+        image: alpine:latest
+        command: ["sh", "-c", "echo Hello from Random App; sleep 3600"]
+        envFrom:
+        - configMapRef:
+            name: random-app-config
+        ports:
+        - containerPort: 8080
